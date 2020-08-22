@@ -13,7 +13,8 @@ PulseOximeter pox;
 
 uint32_t tsLastReport = 0;
 int LED=13;
-int LEDG=12;
+int LEDG=11;
+int LEDUV=10;
 Time t;
 String time_str;
 String rasp;
@@ -47,11 +48,24 @@ void setup()
 }
 
 int count,g;
+int ldr;
 
 void loop()
 {
+    
+    
     pox.update();
 
+    ldr=analogRead(A1);
+    // Make sure to call update as fast as possible
+    
+    if(ldr<40){
+      //digitalWrite(LED,HIGH);
+    }
+    else{
+      //digitalWrite(LED,LOW);
+    }
+    
     if (millis() - tsLastReport > REPORTING_PERIOD_MS) {
 if(pox.getSpO2()>60 && pox.getSpO2()<101)
       {
