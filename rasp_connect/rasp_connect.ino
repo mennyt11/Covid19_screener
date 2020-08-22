@@ -15,18 +15,18 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
+#include <Adafruit_MLX90614.h>
 #include <Wire.h>
 #include "MAX30100_PulseOximeter.h"
 #include <DS3231.h>
 
 DS3231  rtc(SDA, SCL);
 
+Adafruit_MLX90614 mlx = Adafruit_MLX90614();
 
 #define REPORTING_PERIOD_MS     1000
 #define MEASURING_PERIOD_MS     5000
 
-const int lm35=A0;
 // PulseOximeter is the higher level interface to the sensor
 // it offers:
 //  * beat detection reporting
@@ -54,7 +54,7 @@ void setup()
     Serial.begin(9600);
     rtc.begin();
      
-    
+    mlx.begin();  
     //Serial.print("Initializing pulse oximeter..");
     
 
@@ -94,8 +94,7 @@ void loop()
 {
 
     
-    tempc=(analogRead(lm35)*500)/1023;
-    tempc=abs(tempc);  
+    
     ldr=analogRead(A1);
     // Make sure to call update as fast as possible
     if(ldr<40){
@@ -140,11 +139,14 @@ void loop()
 //        Serial.print("  TEMP:");
 //        Serial.print(tempc);
 //        Serial.println("°C");
-          
+           Serial.print("Ambient = "); Serial.print(mlx.readAmbientTempC()); 
+  Serial.print("*C\tObject = "); Serial.print(mlx.readObjectTempC()); Serial.println("*C");
+  Serial.print("Ambient = "); Serial.print(mlx.readAmbientTempF()); 
+  Serial.print("*F\tObject = "); Serial.print(mlx.readObjectTempF()); Serial.println("*F");
         //Serial.println(String(t));
         char date_str[30];
         sprintf(date_str,"%04u-%02u-%02u",t.year,t.mon,t.date);
-        rasp="<" + String(date_str) + "," + time_str + "," + sp + "," + tempc +">";
+        rasp="<" + String(date_str) + "," + time_str + "," + sp + "," + String(mlx.readObjectTempC()) +">";
         Serial.println(rasp);
         digitalWrite(LEDG,HIGH);
         c=0; 

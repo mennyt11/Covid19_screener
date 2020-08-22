@@ -59,7 +59,9 @@ void setup()
     pox.setIRLedCurrent(MAX30100_LED_CURR_7_6MA);
 
     // Register a callback for the beat detection
+    
     pox.setOnBeatDetectedCallback(onBeatDetected);
+ 
 }
 
 void loop()
