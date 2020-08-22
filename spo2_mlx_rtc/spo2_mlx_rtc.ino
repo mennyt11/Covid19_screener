@@ -31,7 +31,9 @@ void setup()
 
    // Serial.print("Initializing pulse oximeter..");
     pinMode(LEDG,OUTPUT);
+    pinMode(LEDUV,OUTPUT);
     
+
     if (!pox.begin()) {
         //Serial.println("FAILED");
         for(;;);
@@ -56,14 +58,14 @@ void loop()
     
     pox.update();
 
-    ldr=analogRead(A1);
+    ldr=analogRead(A7);
     // Make sure to call update as fast as possible
     
-    if(ldr<40){
-      //digitalWrite(LED,HIGH);
+    if(ldr>250){
+      digitalWrite(LEDUV,HIGH);
     }
     else{
-      //digitalWrite(LED,LOW);
+      digitalWrite(LEDUV,LOW);
     }
     
     if (millis() - tsLastReport > REPORTING_PERIOD_MS) {
@@ -86,7 +88,6 @@ if(pox.getSpO2()>60 && pox.getSpO2()<101)
         rasp="<" + String(date_str) + "," + time_str + "," + String(pox.getSpO2()) + "," + String(mlx.readObjectTempC()) +">";
         Serial.println(rasp);
         digitalWrite(LEDG,HIGH);
-        
         count=0;   
         g=0;
         }
